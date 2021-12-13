@@ -3,11 +3,20 @@
 import smtplib
 import os
 import json
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
 YOUTUBE_TRENDING_URL = 'https://www.youtube.com/feed/trending'
+
+def get_response():
+  response = requests.get(YOUTUBE_TRENDING_URL)
+  print ('Status Code', response.status_code)
+  print ('Output', response.text[:500])
+  with open('demo.html', 'w') as f:
+    f.write(response.text[:500])
+
 
 def get_driver():
   chrome_options = Options()
@@ -49,8 +58,8 @@ def send_email(body):
     server_ssl = smtplib.SMTP_SSL('smtp.gmail.com', 465)
     server_ssl.ehlo()   
 
-    SENDER_EMAIL = 'sendsometrends@gmail.com'
-    RECEIVER_EMAIL = 'sendsometrends@gmail.com'
+    SENDER_EMAIL = 'mcflui@gmail.com'
+    RECEIVER_EMAIL = 'mcflui@gmail.com'
     SENDER_PASSWORD = os.environ['GMAIL_PASSWORD']
     
     subject = 'YouTube Trending Videos'
@@ -82,7 +91,7 @@ if __name__ == "__main__":
 
   print('Parsing top 10 videos')
   videos_data = [parse_video(video) for video in videos[:10]]
-  
+
   print('Save the data to a CSV')
   # videos_df = pd.DataFrame(videos_data)
   # print(videos_df)
@@ -91,6 +100,8 @@ if __name__ == "__main__":
   print("Send the results over email")
   body = json.dumps(videos_data, indent=2)
   send_email(body)
+
+  get_response()
 
   print('Finished.')
 
