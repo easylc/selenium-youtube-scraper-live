@@ -7,16 +7,18 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
 
 YOUTUBE_TRENDING_URL = 'https://www.youtube.com/feed/trending'
 
 def get_response():
   response = requests.get(YOUTUBE_TRENDING_URL)
   print ('Status Code', response.status_code)
-  print ('Output', response.text[:500])
-  with open('demo.html', 'w') as f:
-    f.write(response.text[:500])
-
+  #print ('Output', response.text[:500])
+  #with open('demo.html', 'w') as f:
+  #  f.write(response.text[:500])
+  doc = BeautifulSoup (response.text, 'html.parser')
+  print('Page Title:', doc.title.text)
 
 def get_driver():
   chrome_options = Options()
@@ -81,25 +83,25 @@ def send_email(body):
 
 
 if __name__ == "__main__":
-  print('Creating driver')
-  driver = get_driver()
+  #print('Creating driver')
+  #driver = get_driver()
 
-  print('Fetching trending videos')
-  videos = get_videos(driver)
+  #print('Fetching trending videos')
+  #videos = get_videos(driver)
   
-  print(f'Found {len(videos)} videos')
+  #print(f'Found {len(videos)} videos')
 
-  print('Parsing top 10 videos')
-  videos_data = [parse_video(video) for video in videos[:10]]
+  #print('Parsing top 10 videos')
+  #videos_data = [parse_video(video) for video in videos[:10]]
 
-  print('Save the data to a CSV')
+  #print('Save the data to a CSV')
   # videos_df = pd.DataFrame(videos_data)
   # print(videos_df)
   # videos_df.to_csv('trending.csv', index=None)
-
-  print("Send the results over email")
-  body = json.dumps(videos_data, indent=2)
-  send_email(body)
+  
+  #print("Send the results over email")
+  #vbody = json.dumps(videos_data, indent=2)
+  #send_email(body)
 
   get_response()
 
