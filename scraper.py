@@ -20,6 +20,9 @@ def get_response():
   doc = BeautifulSoup (response.text, 'html.parser')
   print('Page Title:', doc.title.text)
 
+  video_divs = doc.find_all ('div',class_='ytd-video-render')
+  print('Video div:', video_divs)
+
 def get_driver():
   chrome_options = Options()
   chrome_options.add_argument('--no-sandbox')
