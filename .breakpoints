@@ -1,3 +1,20 @@
 {
-  "files": {}
+  "files": {
+    ".replit": [
+      {
+        "id": "6968870e-d57c-481b-9040-4e0a307a5d31",
+        "line": 2,
+        "version": 3,
+        "index": 21
+      }
+    ],
+    "Selenium.py": [
+      {
+        "id": "3368251d-e5bc-41fe-b078-3c2300411671",
+        "line": 9,
+        "version": 501,
+        "index": 240
+      }
+    ]
+  }
 }
