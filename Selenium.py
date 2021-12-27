@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-YOUTUBE_TRENDING_URL = 'https://youtube.com/feed/trending'
+YOUTUBE_TRENDING_URL = 'https://www.youtube.com/results?search_query=hong+kong+chill+club'
 
 def  get_driver():
   chrome_options = Options()
@@ -45,9 +45,9 @@ if __name__ == "__main__":
   thumbnail_tag = video.find_element(By.TAG_NAME, 'img')
   thumbnail_url = thumbnail_tag.get_attribute('src')
 
-  channel_div = video.find_element(By.CLASS_NAME,  'ytd-channel-name')
+  channel_div = video.find_element(By.TAG_NAME,  'ytd-video-meta-block').find_element(By.TAG_NAME, 'tp-yt-paper-tooltip').find_element(By.ID, 'tooltip')
 
-  channel_name = channel_div.text
+  channel_name = channel_div.get_attribute('innerHTML')
   
   print('Video Title:',title)
   print('Video URL:',url)
