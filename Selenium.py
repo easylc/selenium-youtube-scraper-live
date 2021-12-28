@@ -1,3 +1,5 @@
+import pandas as pd
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -15,15 +17,16 @@ def  get_driver():
 def get_videos(driver):
   VIDEO_DIV_TAG = 'ytd-video-renderer'
   driver.get(YOUTUBE_TRENDING_URL)
+  driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
   videos = driver.find_elements(By.TAG_NAME, VIDEO_DIV_TAG)
   return videos
 
 
 class Video_D:
-  def __init__(self, title, url, thumbnail, channel):
+  def __init__(self, title, url, thumbnail_url, channel):
     self.title = title
     self.url = url
-    self.thumbnail = thumbnail
+    self.thumbnail_url = thumbnail_url
     self.channel = channel
 
 def get_video_data(video):
@@ -40,11 +43,6 @@ def get_video_data(video):
   channel_div = video.find_element(By.ID, 'channel-info').find_element(By.XPATH, "//yt-formatted-string[1]/a")
   channel_name = channel_div.get_attribute('innerHTML')
 
-  #print('Video Title:',title)
-  #print('Video URL:',url)
-  #print('Video Thumbnail URL:', thumbnail_url)
-  #print('Video Channel Name:', channel_name)
-
   return Video_D(title,url,thumbnail_url,channel_name)
 
 
@@ -59,20 +57,20 @@ if __name__ == "__main__":
   video_divs = driver.find_elements(By.TAG_NAME, TAG)
   
   videos = get_videos(driver)
-  #video_data = get_video_data(videos[0])
-
-  #video_data_list = [get_video_data(v) for v in videos[:10]]
-  #print(video_data_list)
-  #print('Video Title:',video_data.title)
-  #print('Video URL:',video_data.url)
-  #print('Video Thumbnail URL:', video_data.thumbnail)
-  #print('Video Channel Name:', video_data.channel)
   
-  
+  video_data_list = []
+   
   for video_data_itm in videos:
     video_data = get_video_data(video_data_itm)
     print('Video Title:',video_data.title)
     print('Video URL:',video_data.url)
-    print('Video Thumbnail URL:', video_data.thumbnail)
+    print('Video Thumbnail URL:', video_data.thumbnail_url)
     print('Video Channel Name:', video_data.channel)
-  
+    video_data_list.append([video_data.title, video_data.url, video_data.thumbnail_url, video_data.channel])
+
+print('Data List',video_data_list)
+
+print('Save data to CSV')
+video_df = pd.DataFrame(video_data_list,columns=['Title','URL','Thumbnail URL','Channel Name'])
+print(video_df)
+video_df.to_csv('trending.csv')
