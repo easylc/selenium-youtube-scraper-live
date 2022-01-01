@@ -45,7 +45,6 @@ def get_video_data(video):
 
   return Video_D(title,url,thumbnail_url,channel_name)
 
-
 if __name__ == "__main__":
   print('Fetching the page')
   driver = get_driver()
