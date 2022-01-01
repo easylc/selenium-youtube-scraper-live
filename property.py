@@ -26,7 +26,15 @@ if __name__ == "__main__":
   #inputElement = driver.find_element(By.ID,"b")
   #inputElement.submit()
 
+  searchDiv = driver.find_element(By.CLASS_NAME,"searchqueryitem")
+  print('Search:',searchDiv.get_attribute('innerHTML'))
   resultDiv = driver.find_element(By.CLASS_NAME,"searchresult")
-  print('Usage:',resultDiv.get_attribute('innerHTML'))
+  print('Result:',resultDiv.get_attribute('innerHTML'))
 
+  result_all = driver.find_element(By.NAME,"printForm")
+  #print('Result:',result_all.get_attribute('innerHTML'))
+  results = result_all.find_elements(By.XPATH, "//span[@class='saleprice']")
+  print('Details:',len(results))
+
+  print('Price#1',results[1].get_attribute('innerHTML'))
   
