@@ -13,6 +13,23 @@ def  get_driver():
   driver = webdriver.Chrome(options=chrome_options)
   return driver
 
+class trxnClass:
+  def __init__(self, url, postdate, upddate, usagetype, district, addreng, addrchi, bldeng, bldchi, unit, price, indate, landyr):
+    self.url = url
+    self.postdate = postdate
+    self.upddate = upddate
+    self.usagetype = usagetype
+    self.district = district
+    self.addreng = addreng
+    self.addrchi = addrchi
+    self.bldeng = bldeng
+    self.bldchi = bldchi
+    self.unit = unit
+    self.price = price
+    self.indate = indate
+    self.landyr = landyr
+
+
 if __name__ == "__main__":
   print('Fetching the page - Property')
   driver = get_driver()
@@ -27,14 +44,19 @@ if __name__ == "__main__":
   #inputElement.submit()
 
   searchDiv = driver.find_element(By.CLASS_NAME,"searchqueryitem")
-  print('Search:',searchDiv.get_attribute('innerHTML'))
+  #print('Search:',searchDiv.get_attribute('innerHTML'))
   resultDiv = driver.find_element(By.CLASS_NAME,"searchresult")
-  print('Result:',resultDiv.get_attribute('innerHTML'))
+  #print('Result:',resultDiv.get_attribute('innerHTML'))
 
   result_all = driver.find_element(By.NAME,"printForm")
   #print('Result:',result_all.get_attribute('innerHTML'))
   results = result_all.find_elements(By.XPATH, "//span[@class='saleprice']")
-  print('Details:',len(results))
-
-  print('Price#1',results[1].get_attribute('innerHTML'))
+  #print('Details:',len(results))
   
+  links = result_all.find_elements(By.XPATH, "//*[text()='樓盤詳情']").get_attribute('href')
+  
+  for each_link in links:
+    driver.get(each_link)
+    propDiv = driver.find_element(By.ID,"property-info")
+    val = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[1]/td[@class='val']")
+    print("val",val) 
