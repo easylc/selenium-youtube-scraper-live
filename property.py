@@ -1,7 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 import urllib.parse
+import re
 
 PROPERTY_TRENDING_URL = 'https://property.hk/property_search.php?bldg='+urllib.parse.quote("永利中心", safe='')+'&prop=P&pt=A&loc=&dt=&saleType=1&greenform=&fh=&parking='
 
@@ -14,20 +16,12 @@ def  get_driver():
   return driver
 
 class trxnClass:
-  def __init__(self, url, postdate, upddate, usagetype, district, addreng, addrchi, bldeng, bldchi, price, remark, indate, landyr):
+  def __init__(self, url, postdate, upddate, floor, price):
     self.url = url
     self.postdate = postdate
     self.upddate = upddate
-    self.usagetype = usagetype
-    self.district = district
-    self.addreng = addreng
-    self.addrchi = addrchi
-    self.bldeng = bldeng
-    self.bldchi = bldchi
+    self.floor = floor
     self.price = price
-    self.remark = remark
-    self.indate = indate
-    self.landyr = landyr
 
 
 if __name__ == "__main__":
@@ -62,38 +56,23 @@ if __name__ == "__main__":
     driver1.get(link)
     print("link:",link) 
     propDiv = driver1.find_element(By.ID,"property-info")
-    postdate = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[1]/td[@class='val']").get_attribute('innerHTML')
-    print("postdate:",postdate) 
+    postdateTxt = propDiv.find_element(By.XPATH, "//*[text()='更新日期']")
+    postdate = postdateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
+    print("更新日期:",postdate) 
 
-    upddate = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[2]/td[@class='val']").get_attribute('innerHTML')
-    print("upddate:",upddate) 
+    upddateTxt = propDiv.find_element(By.XPATH, "//*[text()='刊登日期']")
+    upddate = upddateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
+    print("刊登日期:",upddate) 
 
-    usagetype = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[3]/td[@class='val']").get_attribute('innerHTML')
-    print("usagetype:",usagetype) 
+    try:
+      floorTxt = propDiv.find_element(By.XPATH, "//*[text()='層數及單位']")
+      floor = floorTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
+      print("層數及單位:",floor)
+    except NoSuchElementException:
+      print("層數及單位:Not Found")
+
+    priceTxt = propDiv.find_element(By.XPATH, "//*[text()='售價 ']")
+    price = priceTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
+    price = re.split('<span', price,1)
+    print("售價(萬):",price[0]) 
     
-    district = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[4]/td[@class='val']").get_attribute('innerHTML')
-    print("district:",district) 
-
-    addreng = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[5]/td[@class='val']").get_attribute('innerHTML')
-    print("addreng:",addreng) 
-
-    addrchi = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[6]/td[@class='val']").get_attribute('innerHTML')
-    print("addrchi:",addrchi) 
-    
-    bldeng = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[7]/td[@class='val']").get_attribute('innerHTML')
-    print("bldeng:",bldeng) 
-
-    bldchi = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[8]/td[@class='val']").get_attribute('innerHTML')
-    print("bldchi:",bldchi) 
-
-    price = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[9]/td[@class='val']").get_attribute('innerHTML')
-    print("price:",price) 
-    
-    remark = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[10]/td[@class='val']").get_attribute('innerHTML')
-    print("remark:",remark) 
-
-    indate = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[11]/td[@class='val']").get_attribute('innerHTML')
-    print("indate:",indate) 
-
-    landyr = propDiv.find_element(By.XPATH, "//div[2]/table[1]/tbody[1]/tr[12]/td[@class='val']").get_attribute('innerHTML')
-    print("landyr:",landyr) 
