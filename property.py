@@ -17,6 +17,16 @@ def  get_driver():
   driver = webdriver.Chrome(options=chrome_options)
   return driver
 
+def  get_mb_driver():
+  chrome_options = Options()
+  chrome_options.add_argument('--no-sandbox')
+  chrome_options.add_argument('--disable-dev-shm-usage')
+  chrome_options.add_argument('--headless')
+  chrome_options.add_argument('--user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"')
+  driver = webdriver.Chrome(options=chrome_options)
+  return driver
+
+
 class propSalesClass:
   def __init__(self, url, postdate, upddate, floor, price):
     self.url = url
@@ -42,12 +52,6 @@ if __name__ == "__main__":
   driver.get(PROPERTY_TRENDING_URL)
   stypeElement = driver.find_element(By.ID,"stypetab3")
   stypeElement.click()
-  
-  #typeElement = driver.find_element(By.ID,"tusageP")
-  #typeElement.click()
-  #print('Usage:',typeElement.get_attribute('innerHTML'))
-  #inputElement = driver.find_element(By.ID,"b")
-  #inputElement.submit()
 
   searchDiv = driver.find_element(By.CLASS_NAME,"searchqueryitem")
   #print('Search:',searchDiv.get_attribute('innerHTML'))
