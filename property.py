@@ -5,6 +5,7 @@ from selenium.common.exceptions import NoSuchElementException
 import urllib.parse
 import re
 
+
 PROPERTY_TRENDING_URL = 'https://property.hk/property_search.php?bldg='+urllib.parse.quote("永利中心", safe='')+'&prop=P&pt=A&loc=&dt=&saleType=1&greenform=&fh=&parking='
 
 PROPERTY_TXN_TRENDING_URL = 'https://property.hk/tran.php?dt=&bldg='+urllib.parse.quote("永利中心", safe='')+'&year&prop=P&saleType=3&loc='
@@ -68,33 +69,38 @@ if __name__ == "__main__":
   driver1 = get_driver()
 
   print ("For Sales")
-  
+  i = 1
   for each_link in links:
     link = each_link.get_attribute('href')
     driver1.get(link)
-    print("link:",link) 
+    #print("link:",link) 
     propDiv = driver1.find_element(By.ID,"property-info")
     postdateTxt = propDiv.find_element(By.XPATH, "//*[text()='更新日期']")
     postdate = postdateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
-    print("更新日期:",postdate) 
+    print(i,".更新日期:",postdate) 
 
     upddateTxt = propDiv.find_element(By.XPATH, "//*[text()='刊登日期']")
     upddate = upddateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
-    print("刊登日期:",upddate) 
+    print(i,".刊登日期:",upddate) 
 
     try:
       floorTxt = propDiv.find_element(By.XPATH, "//*[text()='層數及單位']")
       floor = floorTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
-      print("層數及單位:",floor)
+      print(i,".層數及單位:",floor)
     except NoSuchElementException:
-      print("層數及單位:Not Found")
+      print(i,".層數及單位:Not Found")
 
     priceTxt = propDiv.find_element(By.XPATH, "//*[text()='售價 ']")
     price = priceTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"val").get_attribute('innerHTML')
-    price = re.split('<span', price,1)
-    print("售價(萬):",price[0]) 
-    
-print ("Transaction History")
+    price = re.split('<span', price,1) 
+    price = price[0][1:]
+    price = int(price)*10000 
+    print(i,".售價(萬):","${:,.2f}".format(price))
+    i=i+1
+
+
+print ("For Transaction History")
+j=1
 driver2 = get_driver()
 driver2.get(PROPERTY_TXN_TRENDING_URL)
 propTxnDiv = driver2.find_element(By.ID,"proplist")
@@ -111,25 +117,28 @@ for each_txn_link in TxnLinks:
   propTxnDetailDiv = driver3.find_element(By.CLASS_NAME,"col-xs-12")
   postdateTxt = propTxnDetailDiv.find_element(By.XPATH, "//*[text()='登記日期']")
   postdate = postdateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"col-xs-9").get_attribute('innerHTML')
-  print("登記日期:",postdate) 
+  print(j,".登記日期:",postdate) 
 
   refNumTxt = propTxnDetailDiv.find_element(By.XPATH, "//*[text()='登記編號']")
   refNum = refNumTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"col-xs-9").get_attribute('innerHTML')
-  print("登記編號:",refNum) 
+  print(j,".登記編號:",refNum) 
 
   docdateTxt = propTxnDetailDiv.find_element(By.XPATH, "//*[text()='文件日期']")
   docdate = docdateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"col-xs-9").get_attribute('innerHTML')
-  print("文件日期:",docdate) 
+  print(j,".文件日期:",docdate) 
 
   addrTxt = propTxnDetailDiv.find_element(By.XPATH, "//*[text()='地址']")
   addr = docdateTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"col-xs-9").get_attribute('innerHTML')
-  print("地址:",addr)
+  print(j,".地址:",addr)
 
   priceTxt = propTxnDetailDiv.find_element(By.XPATH, "//*[text()='售價']")
   price = priceTxt.find_element(By.XPATH, "..").find_element(By.CLASS_NAME,"col-xs-9").get_attribute('innerHTML')
   price = re.split('<a', price,1)
   price = re.split(' ', price[0],1)
-  print("售價（百萬）:",price[0])
+  price = float(price[0])*1000000 
+  print(j,".售價（萬）:","${:,.2f}".format(price))
+
+  j=j+1
 
   
 
