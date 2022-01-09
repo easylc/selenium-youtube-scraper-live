@@ -133,3 +133,15 @@ print(trxns_df)
 trxns_df.to_csv('trxns_trending.csv')
 
 print ("== End ==")
+
+driver.close()
+driver.quit()
+
+driver1.close()
+driver1.quit()
+
+driver2.close()
+driver2.quit()
+
+driver3.close()
+driver3.quit()
